@@ -10,10 +10,18 @@ Bark: https://bark.day.app
   - By default, encrytion is enabled. And only support `aes-256-cbc`.
   - Request `/bark/test/generateKeyAndIv` to get the `key` and `iv`.Set both to your `.env` and Bark iOS App
 3. Request `/bark/test/index` to make a push test
+4. Example:
+```php
+use app\bark\service\BarkService;
+
+BarkService::pushMsg('This is title', 'It works!', 'https://baidu.com', [
+    'url' => 'https://devonline.net/'
+])
+```
 
 ### Requirement
 
-OpenSSL 扩展
+1. OpenSSL 扩展
 ```
 php -m | grep openssl
 ```
