@@ -36,7 +36,7 @@ class BarkService extends BaseService
     static function doPushMsg($title, $body, $url, $device_key, $config = [])
     {
         $client = new Client([
-            'timeout' => 3,
+            'timeout' => 8,
         ]);
         $form = [
             'title' => !empty($title) ? $title : env('bark.title', ''),
