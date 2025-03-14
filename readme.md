@@ -25,3 +25,8 @@ BarkService::pushMsg('This is title', 'It works!', 'https://baidu.com', [
 ```
 php -m | grep openssl
 ```
+
+### FAQ
+
+推送失败？接收不到数据？
+> 1、检查配置 2、是否存在请求延时过场

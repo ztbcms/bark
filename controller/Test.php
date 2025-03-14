@@ -14,8 +14,8 @@ class Test extends AdminController
             return self::returnErrorJson('暂无权限');
         }
 
-        return self::returnSuccessJson(BarkService::pushMsg('This is title', 'It works!', 'https://baidu.com', [
-            'url' => 'https://devonline.net/'
+        return self::returnSuccessJson(BarkService::pushMsg('This is title', 'It works!', 'https://bilibili.com', [
+            'url' => 'https://baidu.com'
         ]));
     }
 
