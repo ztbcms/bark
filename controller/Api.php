@@ -33,7 +33,7 @@ class Api extends BaseController
             // 使用队列推送
             $queue_data = ['title' => $title,'body' => $body, 'url' => $url,'config' => $config];
             Queue::push(PushMsgJob::class, $queue_data, PushMsgJob::QUEUE_NAME);
-            return self::returnSuccessJson([], '已经添加到推送队列');
+            return self::returnSuccessJson([], '推送任务添加成功');
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return self::returnErrorJson($e->getMessage());
