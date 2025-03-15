@@ -21,10 +21,14 @@ php -m | grep openssl
 
 ### Usage
 
+#### Example 1: 手动调用
 
-#### Example 1: Used by manually
+最简单的调用方式。
 
-
+架构图：
+```
+Developer --- BarkService --> Bark Server ---> Bark iOS App
+```
 
 ```php
 use app\bark\service\BarkService;
@@ -36,24 +40,32 @@ BarkService::pushMsg('This is title', 'It works!', 'https://aaa.com', [
 ])
 ```
 
-#### Example 2: As a api service
+#### Example 2: 自建服务提供（Server-Client）
 
-For the big project, mutil projects, or imporve the network performance. You can use the api service.
+推送量大，或者跨项目的时候建议采用这种模式，独立成一个Bark 推送服务，性能更好，管理更方便。
 
-API:
+架构图：
+```
+Developer --- BarkApiClientService  ---> [自建API Service] ---> Bark Server ---> Bark iOS App
+```
+
+Server API:
 ```
 POST /bark/api/pushMsg
 
+api_key: string required
 title: string required
 body: string required
-url: string optional
 ```
+
+客户端请求示例
 
 GuzzleHttp 请求示例：
 ```php
 $client = new GuzzleHttp\Client();
 $res = $client->request('POST', 'https://Your.domain/bark/api/pushMsg', [
      'form_params' => [
+        'api_key' => 'api_key',
         'title' => 'Title',
         'body' => 'Body',
         'url' => ''
@@ -61,7 +73,26 @@ $res = $client->request('POST', 'https://Your.domain/bark/api/pushMsg', [
 ]);
 ```
 
-启动队列
+【推荐】或直接使用模块提供的客户端实现：
+```php
+$client = new BarkApiClientService();
+
+$res = $client->pushMsg('标题', 'body内容', [
+  'url' => 'http://baidu.com',
+  'icon' => 'https://xxx.cn/logo.png',
+]);
+```
+
+此操作需要在`.env`中配置：
+```ini
+[bark]
+.....
+# 作为客户端时，请求服务端推送接口
+client_api_push_url=https://your.domian/bark/api/pushMsg
+client_api_key=bark3
+```
+
+最后启动队列
 ```bash
 # for production
 php think queue:listen --queue BarkPushMsg --sleep 3

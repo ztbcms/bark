@@ -43,7 +43,7 @@ class Api extends BaseController
     // 验证 API key
     private function validateApiKey()
     {
-        $api_keys = env('bark.api_keys', '');
+        $api_keys = env('bark.server_api_keys', '');
         $api_key = input('post.api_key');
         return !empty($api_key) && strpos($api_keys, $api_key) !== false;
     }
