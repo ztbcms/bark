@@ -2,15 +2,16 @@
 
 namespace app\bark\controller;
 
-use app\bark\service\BarkService;
+use app\bark\job\PushMsgJob;
 use app\BaseController;
 use app\Request;
 use think\facade\Log;
+use think\facade\Queue;
 
 class Api extends BaseController
 {
-	// 推送消息
-    public function push(Request $request)
+    // 推送消息
+    public function pushMsg(Request $request)
     {
         if (!$this->validateApiKey()) {
             return self::returnErrorJson('API key is invalid');
@@ -29,15 +30,17 @@ class Api extends BaseController
             }
         }
         try {
-            $res = BarkService::pushMsg($title, $body, $url, $config);
-            return self::returnSuccessJson($res);
+            // 使用队列推送
+            $queue_data = ['title' => $title,'body' => $body, 'url' => $url,'config' => $config];
+            Queue::push(PushMsgJob::class, $queue_data, PushMsgJob::QUEUE_NAME);
+            return self::returnSuccessJson([], '已经添加到推送队列');
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return self::returnErrorJson($e->getMessage());
         }
     }
 
-	// 验证 API key
+    // 验证 API key
     private function validateApiKey()
     {
         $api_keys = env('bark.api_keys', '');
