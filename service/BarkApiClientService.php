@@ -28,7 +28,9 @@ class BarkApiClientService
      */
     public function pushMsg(string $title, string $body, array $options = []): array
     {
-        $client = new \GuzzleHttp\Client();
+        $client = new \GuzzleHttp\Client([
+            'timeout' => 8,
+        ]);
         $form_params =  array_merge([
           'api_key' => $this->client_api_key,
           'title' => $title,
